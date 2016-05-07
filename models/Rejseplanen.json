@@ -1,0 +1,143 @@
+{
+  "luis_schema_version": "1.2.0",
+  "name": "RejseplanenV2",
+  "desc": "",
+  "culture": "en-us",
+  "intents": [
+    {
+      "Name": "FindRoute",
+      "Children": []
+    },
+    {
+      "Name": "None",
+      "Children": []
+    }
+  ],
+  "entities": [
+    {
+      "Name": "location",
+      "Children": [
+        "address",
+        "station"
+      ]
+    }
+  ],
+  "bing_entities": [],
+  "actions": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "find the next bus from nordre fasanvej 144 to nørreport st",
+      "intent": "FindRoute",
+      "entities": [
+        {
+          "entity": "location::address",
+          "startPos": 5,
+          "endPos": 7
+        },
+        {
+          "entity": "location::station",
+          "startPos": 9,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "when is the next train from Østerport station to kanalvej 7 lyngby",
+      "intent": "FindRoute",
+      "entities": [
+        {
+          "entity": "location::address",
+          "startPos": 9,
+          "endPos": 11
+        },
+        {
+          "entity": "location::station",
+          "startPos": 6,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "how can i get from vadgardsveg 2, søborg to gentofte?",
+      "intent": "FindRoute",
+      "entities": [
+        {
+          "entity": "location::address",
+          "startPos": 5,
+          "endPos": 8
+        },
+        {
+          "entity": "location::address",
+          "startPos": 10,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "how can i get from vadgardsveg 2, søborg to gentofte station?",
+      "intent": "FindRoute",
+      "entities": [
+        {
+          "entity": "location::address",
+          "startPos": 5,
+          "endPos": 8
+        },
+        {
+          "entity": "location::station",
+          "startPos": 10,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "how can i get from vadgardsveg, søborg to gentofte st?",
+      "intent": "FindRoute",
+      "entities": [
+        {
+          "entity": "location::address",
+          "startPos": 5,
+          "endPos": 8
+        },
+        {
+          "entity": "location::station",
+          "startPos": 10,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "how can i get from vesteport st to gentofte station?",
+      "intent": "FindRoute",
+      "entities": [
+        {
+          "entity": "location::station",
+          "startPos": 5,
+          "endPos": 6
+        },
+        {
+          "entity": "location::station",
+          "startPos": 8,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "when is the next bus from Østerport station to kambenburgvej 7 frederiksberg?",
+      "intent": "FindRoute",
+      "entities": [
+        {
+          "entity": "location::address",
+          "startPos": 9,
+          "endPos": 11
+        },
+        {
+          "entity": "location::station",
+          "startPos": 6,
+          "endPos": 7
+        }
+      ]
+    }
+  ]
+}

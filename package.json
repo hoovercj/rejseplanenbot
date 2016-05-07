@@ -1,0 +1,17 @@
+{
+  "name": "rejseplanenbot",
+  "version": "0.0.1",
+  "description": "A bot for managing a users to-do list using a natural language interface. Created tasks are saved to the session.userData object so are tracked per/user. For Slack you could easily change this to the session.channelData object and create a team wide task list.",
+  "main": "botConnectorBot.js",
+  "dependencies": {
+    "botbuilder": "^0.9.2",
+    "request-promise": "^3.0.0",
+    "restify": "^4.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hoovercj",
+  "license": "ISC"
+}

@@ -15,25 +15,33 @@ var dialog = new builder.LuisDialog(model);
 module.exports = dialog;
 
 /** Answer users help requests. We can use a DialogAction to send a static message. */
-dialog.on('None', builder.DialogAction.send(prompts.helpMessage));
+dialog.on('None', function() {
+    console.log('Intent Triggered: None')
+    builder.DialogAction.send(prompts.helpMessage);
+});
 
 dialog.on('error', function(message) {
-    console.log(message);
+    console.error(message);
 });
 
 /** Prompts a user for the title of the task and saves it.  */
 dialog.on('FindRoute', [
     function (session, args, next) {
+        console.log('Intent Triggered: FindRoute');
+        
         // See if got the tasks title from our LUIS model.
         var luisLocations = sortLocations(args); 
         if (luisLocations.length != 2) {
             // TODO: Do something better
+            console.log('FindRoute: Did not find 2 locations')
             session.send(prompts.routeRequestNotUnderstood);    
-        } else { 
+        } else {             
             var originLuisLocation = luisLocations[0];
             var destinationLuisLocation = luisLocations[1];
             var originRejseplanenLocation;
             var destinationRejseplanenLocation;
+
+            console.log(`Found ${originLuisLocation.entity} and ${destinationLuisLocation.entity}`);
 
             getRejseplanenLocation(originLuisLocation).then((location) => {
                 originRejseplanenLocation = location;
@@ -51,7 +59,13 @@ dialog.on('FindRoute', [
             });
         }
     }, function(session, results) {
-        session.send(messageBuilder.buildTripDetailsMessage(session.userData.tripList[results.response.index - 1]));
+        if (results.response) {
+            console.log(`User Choice: ${results.response.index}`)
+            session.send(messageBuilder.buildTripDetailsMessage(session.userData.tripList[results.response.index - 1]));
+        } else {
+            session.send("I didn't understand. Please ask me again.");
+            console.log('Ending waterfall with no response.')  
+        }
     }
 ]);
 

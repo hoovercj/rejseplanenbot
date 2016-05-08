@@ -46,6 +46,8 @@ dialog.on('FindRoute', [
                 var prompt = `I found ${tripList.length} routes from ${originRejseplanenLocation.name} to ${destinationRejseplanenLocation.name}. Which one do you want the details for?`;
                 var options = tripList.map(messageBuilder.buildTripSummaryMessage);
                 builder.Prompts.choice(session, prompt, options);
+            }).catch((error) => {
+                session.send(`An error Occurred. Error message:\n\n${error}`);
             });
         }
     }, function(session, results) {

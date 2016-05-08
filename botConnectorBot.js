@@ -17,6 +17,12 @@ bot.add('/', index);
 // Setup Restify Server
 var server = restify.createServer();
 server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
+
+server.get('/echo/:name', function (req, res, next) {
+  res.send(req.params);
+  return next();
+});
+
 server.listen(process.env.port || 3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
 });

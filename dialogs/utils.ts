@@ -1,5 +1,13 @@
-export function parseDateTime(date, time): Date {
+export function parseRejseplanenDateTime(date: string, time: string): Date {
+    if (!date || !time) {
+        return null;
+    }
+
     let dateParts = date.split('.');
+    if (!dateParts || dateParts.length != 3) {
+        return null;
+    }
+
     let newDateString = `${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`;
     return new Date(`${newDateString} ${time} GMT+0200`)
 }

@@ -1,4 +1,6 @@
-let utils = require('./utils');
+import * as utils from'./utils';
+
+import { Trip } from '../lib/rejseplanen';
 
 interface TripInfo {
     startTime: Date,
@@ -6,7 +8,7 @@ interface TripInfo {
     totalTime: number
 }
 
-export function buildTripSummaryMessage(trip): string {
+export function buildTripSummaryMessage(trip: Trip): string {
     let tripInfo = buildTripInfo(trip);
     let message = `${tripInfo.startTime.toLocaleTimeString()} to ${tripInfo.endTime.toLocaleTimeString()}`;
     if (trip.Leg.length == 1 && trip.Leg[0].type == 'WALK') {
@@ -21,13 +23,12 @@ export function buildTripSummaryMessage(trip): string {
     return message;
 }
 
-export function buildTripDetailsMessage(trip): string {
+export function buildTripDetailsMessage(trip: Trip): string {
     let tripInfo = buildTripInfo(trip);
     let message = `If you leave at ${tripInfo.startTime.toLocaleTimeString()} you will arrive at ${tripInfo.endTime.toLocaleTimeString()}\n\n`
     trip.Leg.forEach((leg) => {
-        let startTime = utils.parseDateTime(leg.Origin.date, leg.Origin.time);
-        let endTime = utils.parseDateTime(leg.Destination.date, leg.Destination.time);
-
+        let startTime = utils.parseRejseplanenDateTime(leg.Origin.date, leg.Origin.time);
+        let endTime = utils.parseRejseplanenDateTime(leg.Destination.date, leg.Destination.time);
         let legTime = utils.minutesBetweenDates(endTime, startTime);
         let legPrefix = ((leg.type == "WALK") ? `Walk ` : `Ride ${leg.name}`);
         message += `${legPrefix} ${legTime} minutes from ${leg.Origin.name} to ${leg.Destination.name}\n\n`;
@@ -35,12 +36,12 @@ export function buildTripDetailsMessage(trip): string {
     return message;
 }
 
-function buildTripInfo(trip): TripInfo {
+function buildTripInfo(trip: Trip): TripInfo {
     let tripInfo: TripInfo = <TripInfo>{
-        startTime: utils.parseDateTime(trip.Leg[0].Origin.date, trip.Leg[0].Origin.time),
-        endTime: utils.parseDateTime(trip.Leg[trip.Leg.length -1].Destination.date, trip.Leg[trip.Leg.length -1].Destination.time),
+        startTime: utils.parseRejseplanenDateTime(trip.Leg[0].Origin.date, trip.Leg[0].Origin.time),
+        endTime: utils.parseRejseplanenDateTime(trip.Leg[trip.Leg.length -1].Destination.date, trip.Leg[trip.Leg.length -1].Destination.time),
         totalTime: 0
     }
-    tripInfo.totalTime = utils.minutesBetweenDates(this.startTime, this.endTime); 
+    tripInfo.totalTime = utils.minutesBetweenDates(tripInfo.startTime, tripInfo.endTime); 
     return tripInfo;
 }

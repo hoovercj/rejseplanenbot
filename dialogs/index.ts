@@ -9,7 +9,6 @@ import * as rejseplanen from '../lib/rejseplanen';
 import * as utils from './utils';
 import * as messageBuilder from './messageBuilder';
 
-
 /** Return a LuisDialog that points at our model and then add intent handlers. */
 let model = process.env.model || 'https://api.projectoxford.ai/luis/v1/application?id=742c073a-d51f-4353-b716-44a0e1ae9cf2&subscription-key=8f0caa5b20404008856c4f41d1945651';
 let dialog = new builder.LuisDialog(model);
@@ -19,7 +18,6 @@ module.exports = dialog;
 dialog.on('None', function(session) {
     console.log('Intent Triggered: None')
     session.send(prompts.helpMessage);
-    // builder.DialogAction.send(prompts.helpMessage);
 });
 
 dialog.on('error', function(message) {
@@ -36,8 +34,8 @@ dialog.on('FindRoute', [
         if (luisLocations.length != 2) {
             // TODO: Do something better
             console.log('FindRoute: Did not find 2 locations')
-            session.send(prompts.routeRequestNotUnderstood);    
-        } else {             
+            session.send(prompts.routeRequestNotUnderstood);
+        } else {
             let originLuisLocation = luisLocations[0];
             let destinationLuisLocation = luisLocations[1];
             let originRejseplanenLocation;
@@ -85,14 +83,14 @@ function buildTripMessage(trip) {
     let route = trip[0];
     let routeInfo:any = {};
     
-    routeInfo.startTime = utils.parseDateTime(route.Leg[0].Origin.date, route.Leg[0].Origin.time);
-    routeInfo.endTime = utils.parseDateTime(route.Leg[route.Leg.length -1].Destination.date, route.Leg[route.Leg.length -1].Destination.time);
+    routeInfo.startTime = utils.parseRejseplanenDateTime(route.Leg[0].Origin.date, route.Leg[0].Origin.time);
+    routeInfo.endTime = utils.parseRejseplanenDateTime(route.Leg[route.Leg.length -1].Destination.date, route.Leg[route.Leg.length -1].Destination.time);
     routeInfo.totalTime = utils.minutesBetweenDates(routeInfo.startTime, routeInfo.endTime);
     
     let message = `If you leave at ${routeInfo.startTime.getHours()}:${routeInfo.startTime.getMinutes()} you will arrive at ${routeInfo.endTime.getHours()}:${routeInfo.endTime.getMinutes()}\n\n`
     route.Leg.forEach((leg) => {
-        let startTime = utils.parseDateTime(leg.Origin.date, leg.Origin.time);
-        let endTime = utils.parseDateTime(leg.Destination.date, leg.Destination.time);
+        let startTime = utils.parseRejseplanenDateTime(leg.Origin.date, leg.Origin.time);
+        let endTime = utils.parseRejseplanenDateTime(leg.Destination.date, leg.Destination.time);
 
         let legTime = utils.minutesBetweenDates(endTime, startTime);
         let legPrefix = ((leg.type == "WALK") ? `Walk ` : `Ride ${leg.name}`);
@@ -100,20 +98,3 @@ function buildTripMessage(trip) {
     });
     return message;
 }
-
-// TripList
-//     Trip[]
-//         isCancelled
-//         Leg[]
-//             name
-//             type
-//             Origin
-//                 name
-//                 type
-//                 time
-//                 date
-//             Destination
-//                 name
-//                 type
-//                 time
-//                 date

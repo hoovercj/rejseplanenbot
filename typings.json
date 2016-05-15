@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "node": "registry:dt/node#6.0.0+20160514165920",
+    "require": "registry:dt/require#2.1.20+20160316155526"
+  },
+  "ambientDependencies": {
+    "require": "registry:dt/require#2.1.20+20160316155526"
+  }
+}

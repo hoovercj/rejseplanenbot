@@ -74,7 +74,7 @@ luisDialog.on('FindRoute', [
                     session.userData.routeList = routeList;
                     let prompt = `I found ${routeList.routes.length} routes from ${routeList.origin} to ${routeList.destination}. Which one do you want the details for?`;
                     let options = routeList.routes.map((route, index) => {
-                        return route.summary;
+                        return route.summary = '\n\n';
                     });
                     builder.Prompts.choice(session, prompt, options);
                 }

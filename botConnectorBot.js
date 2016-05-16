@@ -3,14 +3,15 @@ A bot for managing a users to-do list.  See the README.md file for usage
 instructions.
 -----------------------------------------------------------------------------*/
 
+require('dotenv').config();
 var restify = require('restify');
 var builder = require('botbuilder');
 var index = require('./dialogs/index')
 
 // Create bot and add dialogs
 var bot = new builder.BotConnectorBot({ 
-    appId: process.env.appId, 
-    appSecret: process.env.appSecret 
+    appId: process.env.BOT_CONNECTOR_APP_ID, 
+    appSecret: process.env.BOT_CONNECTOR_APP_SECRET 
 });
 bot.add('/', index);
 

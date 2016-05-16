@@ -7,7 +7,7 @@ import { RejseplanenRoutesProvider } from '../lib/rejseplanen';
 import { GoogleMapsRoutesProvider } from '../lib/googlemaps';
 let googleProvider: IRouteProvider = new GoogleMapsRoutesProvider({key: process.env.GOOGLE_MAPS_KEY});
 let rejseplanenProvider: IRouteProvider = new RejseplanenRoutesProvider(process.env.REJSEPLANEN_BASE_URL);
-let routeProvider = googleProvider;
+// let routeProvider = googleProvider;
 
 /** Return a LuisDialog that points at our model and then add intent handlers. */
 let model = process.env.LUIS_AI_MODEL
@@ -21,12 +21,11 @@ module.exports = luisDialog;
 //     session.send(prompts.helpMessage);
 // });
 luisDialog.onDefault((session) => {
-    // match session.message.text
     if (session.message.text.indexOf('google') != -1) {
-        routeProvider = googleProvider;
+        session.userData.routeProvider = googleProvider;
         session.send("Ok, I'll use google.");
     } else if (session.message.text.indexOf('rejseplanen') != -1) {
-        routeProvider = rejseplanenProvider;
+        session.userData.routeProvider = rejseplanenProvider;
         session.send("Ok, I'll use rejseplanen.")
     } else {
         session.send(prompts.helpMessage);
@@ -53,7 +52,7 @@ luisDialog.on('FindRoute', [
             let originLuisLocation = luisLocations[0];
             let destinationLuisLocation = luisLocations[1];
             console.log(`Found ${originLuisLocation.entity} and ${destinationLuisLocation.entity}`);
-            routeProvider.getRoutes(originLuisLocation, destinationLuisLocation)
+            (session.userData.routeProvider || googleProvider).getRoutes(originLuisLocation, destinationLuisLocation)
             .then((routeList) => {
                 if (!routeList || !routeList.routes || routeList.routes.length == 0) {
                     session.send("I'm sorry, I found no routes for you.");
@@ -74,7 +73,6 @@ luisDialog.on('FindRoute', [
                 session.send(`An error Occurred. Error message:\n\n${error}`);
             });
         }
-    // }
     }, function(session, results) {
         if (results.response) {
             console.log(`User Choice: ${results.response.index}`)
@@ -85,25 +83,6 @@ luisDialog.on('FindRoute', [
         }
     }
 ]);
-
-// dialog.on('ChooseRoute', [
-//     function (session, args, next) {
-//         let routeList = session.userData.routeList;
-//         let prompt = `I found ${routeList.routes.length} routes from ${routeList.origin} to ${routeList.destination}. Which one do you want the details for?`;
-//         let options = routeList.routes.map((route, index) => {
-//             return route.summary;
-//         });
-//         builder.Prompts.choice(session, prompt, options);
-//     }, function(session, results) {
-//         if (results.response) {
-//             console.log(`User Choice: ${results.response.index}`)
-//             session.send(session.userData.routeList.routes[results.response.index - 1].details);
-//         } else {
-//             console.log('Ending waterfall with no response.')  
-//             session.send("I didn't understand. Please ask me again.");
-//         }
-//     }
-// ]);
 
 function sortLocations(args): LuisLocation[] {
     let locations = builder.EntityRecognizer.findAllEntities(args.entities, 'location::address').concat(builder.EntityRecognizer.findAllEntities(args.entities, 'location::station')); 

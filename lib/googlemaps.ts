@@ -53,7 +53,7 @@ export class GoogleMapsRoutesProvider implements IRouteProvider {
                 }
             });
         });
-        return `${tripInfo.endTime} to ${tripInfo.startTime}, ${steps.join(', ')}`;
+        return `${tripInfo.startTime} to ${tripInfo.endTime}, ${steps.join(', ')}`;
     }
     
     private buildRouteDetails(route: google.maps.DirectionsRoute): string {
@@ -80,7 +80,8 @@ export class GoogleMapsRoutesProvider implements IRouteProvider {
                 origin: origin,
                 destination: destination,
                 mode: 'transit',
-                departure_time: new Date()
+                departure_time: new Date(),
+                alternatives: true
             }, function(error, data: google.maps.DirectionsResult) {
                 if (error) {
                     reject(error);

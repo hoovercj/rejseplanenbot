@@ -84,6 +84,7 @@ export class GoogleMapsRoutesProvider implements IRouteProvider {
                 // alternatives: false
             }, function(error, data: google.maps.DirectionsResult) {
                 if (error) {
+                    console.log(error);
                     reject(error);
                 } else {
                     resolve(data.routes);

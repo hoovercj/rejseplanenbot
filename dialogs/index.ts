@@ -52,13 +52,21 @@ luisDialog.on('FindRoute', [
             let originLuisLocation = luisLocations[0];
             let destinationLuisLocation = luisLocations[1];
             console.log(`Found ${originLuisLocation.entity} and ${destinationLuisLocation.entity}`);
-            (session.userData.routeProvider || googleProvider).getRoutes(originLuisLocation, destinationLuisLocation)
+            (session.userData.routeProvider || googleProvider)
+            let provider = googleProvider;
+            if (session.userData && session.userData.routeProvider) {
+                provider = session.userData.routeProvider;
+            }
+            provider.getRoutes(originLuisLocation, destinationLuisLocation)
             .then((routeList) => {
                 if (!routeList || !routeList.routes || routeList.routes.length == 0) {
+                    console.log('Issue with route list. Undefined, null, or empty.');
                     session.send("I'm sorry, I found no routes for you.");
                 } else if (routeList.routes.length == 1) {
+                    console.log('Found 1 route. ' + routeList.routes[0].details);
                     session.send(routeList.routes[0].details);
                 } else {
+                    console.log('Found multiple routes');
                     session.userData.routeList = routeList;
                     let prompt = `I found ${routeList.routes.length} routes from ${routeList.origin} to ${routeList.destination}. Which one do you want the details for?`;
                     let options = routeList.routes.map((route, index) => {

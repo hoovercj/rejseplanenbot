@@ -21,10 +21,10 @@ module.exports = luisDialog;
 //     session.send(prompts.helpMessage);
 // });
 luisDialog.onDefault((session) => {
-    if (session.message.text.indexOf('google') != -1) {
+    if (session.message.text.toLowerCase().indexOf('google') != -1) {
         session.userData.routeProvider = googleProvider;
         session.send("Ok, I'll use google.");
-    } else if (session.message.text.indexOf('rejseplanen') != -1) {
+    } else if (session.message.text.toLowerCase().indexOf('rejseplanen') != -1) {
         session.userData.routeProvider = rejseplanenProvider;
         session.send("Ok, I'll use rejseplanen.")
     } else {
@@ -56,10 +56,8 @@ luisDialog.on('FindRoute', [
             .then((routeList) => {
                 if (!routeList || !routeList.routes || routeList.routes.length == 0) {
                     session.send("I'm sorry, I found no routes for you.");
-                    session.endDialog();
                 } else if (routeList.routes.length == 1) {
                     session.send(routeList.routes[0].details);
-                    session.endDialog();
                 } else {
                     session.userData.routeList = routeList;
                     let prompt = `I found ${routeList.routes.length} routes from ${routeList.origin} to ${routeList.destination}. Which one do you want the details for?`;

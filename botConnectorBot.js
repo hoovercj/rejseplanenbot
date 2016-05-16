@@ -3,7 +3,7 @@ A bot for managing a users to-do list.  See the README.md file for usage
 instructions.
 -----------------------------------------------------------------------------*/
 
-require('dotenv').config({silent: true, path: '../'});
+require('dotenv').config({silent: true});
 var restify = require('restify');
 var builder = require('botbuilder');
 var index = require('./dialogs/index')

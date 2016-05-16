@@ -81,7 +81,7 @@ export class GoogleMapsRoutesProvider implements IRouteProvider {
                 destination: destination,
                 mode: 'transit',
                 departure_time: new Date(),
-                alternatives: true
+                // alternatives: false
             }, function(error, data: google.maps.DirectionsResult) {
                 if (error) {
                     reject(error);

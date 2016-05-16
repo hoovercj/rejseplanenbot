@@ -5,27 +5,41 @@ let prompts = require('../prompts');
 import { IRouteProvider, RouteList, Route, LuisLocation } from '../lib/interfaces';
 import { RejseplanenRoutesProvider } from '../lib/rejseplanen';
 import { GoogleMapsRoutesProvider } from '../lib/googlemaps';
-let routeProvider = new GoogleMapsRoutesProvider({key: process.env.GOOGLE_MAPS_KEY});
-// let routeProvider: IRouteProvider = new RejseplanenRoutesProvider(process.env.REJSEPLANEN_BASE_URL);
+let googleProvider: IRouteProvider = new GoogleMapsRoutesProvider({key: process.env.GOOGLE_MAPS_KEY});
+let rejseplanenProvider: IRouteProvider = new RejseplanenRoutesProvider(process.env.REJSEPLANEN_BASE_URL);
+let routeProvider = googleProvider;
 
 /** Return a LuisDialog that points at our model and then add intent handlers. */
 let model = process.env.LUIS_AI_MODEL
-let dialog = new builder.LuisDialog(model);
-module.exports = dialog;
+let luisDialog = new builder.LuisDialog(model);
+module.exports = luisDialog;
 
 
 /** Answer users help requests. We can use a DialogAction to send a static message. */
-dialog.on('None', function(session) {
-    console.log('Intent Triggered: None')
-    session.send(prompts.helpMessage);
+// luisDialog.on('None', function(session) {
+//     console.log('Intent Triggered: None')
+//     session.send(prompts.helpMessage);
+// });
+luisDialog.onDefault((session) => {
+    // match session.message.text
+    if (session.message.text.indexOf('google') != -1) {
+        routeProvider = googleProvider;
+        session.send("Ok, I'll use google.");
+    } else if (session.message.text.indexOf('rejseplanen') != -1) {
+        routeProvider = rejseplanenProvider;
+        session.send("Ok, I'll use rejseplanen.")
+    } else {
+        session.send(prompts.helpMessage);
+    }
 });
 
-dialog.on('error', function(message) {
+
+luisDialog.on('error', function(message) {
     console.error(message);
 });
 
 /** Prompts a user for the title of the task and saves it.  */
-dialog.on('FindRoute', [
+luisDialog.on('FindRoute', [
     function (session, args, next) {
         console.log('Intent Triggered: FindRoute');
         

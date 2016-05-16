@@ -73,10 +73,11 @@ luisDialog.on('FindRoute', [
                     console.log('Found multiple routes');
                     session.userData.routeList = routeList;
                     let prompt = `I found ${routeList.routes.length} routes from ${routeList.origin} to ${routeList.destination}. Which one do you want the details for?`;
-                    let options = routeList.routes.map((route, index) => {
-                        return route.summary + '\n\n';
+                    let choices = routeList.routes.map((route, index) => {
+                        return route.summary;
                     });
-                    builder.Prompts.choice(session, prompt, options);
+                    // { listStyle: 2 } is 'list'. TODO: get types into this
+                    builder.Prompts.choice(session, prompt, choices, {listStyle: 2});
                 }
             })
             .catch((error) => {

@@ -4,7 +4,7 @@
   "description": "A bot for managing a users to-do list using a natural language interface. Created tasks are saved to the session.userData object so are tracked per/user. For Slack you could easily change this to the session.channelData object and create a team wide task list.",
   "main": "./out/botConnectorBot.js",
   "dependencies": {
-    "botbuilder": "^0.9.2",
+    "botbuilder": "0.10.2",
     "dotenv": "^2.0.0",
     "googlemaps": "^1.6.0",
     "request-promise": "^3.0.0",

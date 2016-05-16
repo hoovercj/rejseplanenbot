@@ -20,7 +20,7 @@ export class GoogleMapsRoutesProvider implements IRouteProvider {
         });
     }
 
-    buildTripInfo = (route: google.maps.DirectionsRoute): TripInfo => {
+    private buildTripInfo = (route: google.maps.DirectionsRoute): TripInfo => {
         return <TripInfo>{
             startTime: route.legs[0].departure_time.text,
             endTime: route.legs[route.legs.length - 1].arrival_time.text,

@@ -5,8 +5,12 @@ let prompts = require('../prompts');
 import { IRouteProvider, RouteList, Route, LuisLocation } from '../lib/interfaces';
 import { RejseplanenRoutesProvider } from '../lib/rejseplanen';
 import { GoogleMapsRoutesProvider } from '../lib/googlemaps';
-let googleProvider: IRouteProvider = new GoogleMapsRoutesProvider({key: process.env.GOOGLE_MAPS_KEY});
-let rejseplanenProvider: IRouteProvider = new RejseplanenRoutesProvider(process.env.REJSEPLANEN_BASE_URL);
+let providers = {
+    google: new GoogleMapsRoutesProvider({key: process.env.GOOGLE_MAPS_KEY}),
+    rejseplanen: new RejseplanenRoutesProvider(process.env.REJSEPLANEN_BASE_URL)
+}
+// let googleProvider: IRouteProvider = new GoogleMapsRoutesProvider({key: process.env.GOOGLE_MAPS_KEY});
+// let rejseplanenProvider: IRouteProvider = new RejseplanenRoutesProvider(process.env.REJSEPLANEN_BASE_URL);
 // let routeProvider = googleProvider;
 
 /** Return a LuisDialog that points at our model and then add intent handlers. */
@@ -22,10 +26,10 @@ module.exports = luisDialog;
 // });
 luisDialog.onDefault((session) => {
     if (session.message.text.toLowerCase().indexOf('google') != -1) {
-        session.userData.routeProvider = googleProvider;
+        session.userData.routeProvider = 'google';
         session.send("Ok, I'll use google.");
     } else if (session.message.text.toLowerCase().indexOf('rejseplanen') != -1) {
-        session.userData.routeProvider = rejseplanenProvider;
+        session.userData.routeProvider = 'rejseplanen';
         session.send("Ok, I'll use rejseplanen.")
     } else {
         session.send(prompts.helpMessage);
@@ -52,11 +56,11 @@ luisDialog.on('FindRoute', [
             let originLuisLocation = luisLocations[0];
             let destinationLuisLocation = luisLocations[1];
             console.log(`Found ${originLuisLocation.entity} and ${destinationLuisLocation.entity}`);
-            (session.userData.routeProvider || googleProvider)
-            let provider = googleProvider;
-            if (session.userData && session.userData.routeProvider) {
-                provider = session.userData.routeProvider;
-            }
+            let provider = providers[session.userData.routeProvider || 'google'];
+            // let provider = googleProvider;
+            // if (session.userData && session.userData.routeProvider) {
+            //     provider = session.userData.routeProvider;
+            // }
             provider.getRoutes(originLuisLocation, destinationLuisLocation)
             .then((routeList) => {
                 if (!routeList || !routeList.routes || routeList.routes.length == 0) {

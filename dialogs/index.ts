@@ -1,4 +1,5 @@
 // Written by Microsoft
+import { ListStyle } from 'botbuilder';
 let builder = require('botbuilder');
 let prompts = require('../prompts');
 
@@ -76,8 +77,7 @@ luisDialog.on('FindRoute', [
                     let choices = routeList.routes.map((route, index) => {
                         return route.summary;
                     });
-                    // { listStyle: 2 } is 'list'. TODO: get types into this
-                    builder.Prompts.choice(session, prompt, choices, {listStyle: 2});
+                    builder.Prompts.choice(session, prompt, choices, {listStyle: ListStyle.list});
                 }
             })
             .catch((error) => {
